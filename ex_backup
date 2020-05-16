@@ -6,7 +6,6 @@ read acopiar
 echo el directorio está en...
 locate $acopiar
 if [ -d $acopiar ]; then
-        echo $origen
         echo "Desea respaldar el directorio? (s/n)"
         read copiar
         if [ $copiar = "s" ]; then
