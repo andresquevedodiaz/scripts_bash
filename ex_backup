@@ -1,0 +1,26 @@
+#!/bin/bash
+#script para hacer backups
+updatedb
+echo escriba la ruta absoluta del directorio a respaldar
+read acopiar
+echo el directorio está en...
+locate $acopiar
+if [ -d $acopiar ]; then
+        echo $origen
+        echo "Desea respaldar el directorio? (s/n)"
+        read copiar
+        if [ $copiar = "s" ]; then
+                echo Dónde desea guardar el respaldo del directorio $acopiar?
+                read dondecopiar
+                rsync -avzh $acopiar $dondecopiar;
+                echo verificación de respaldo:
+                echo $dondecopiar
+		ls -l $dondecopiar
+	elif [ $copiar = "n" ]; then
+                echo La sesión ha finalizado
+        else
+                echo Esta no es una opción
+        fi
+else
+        echo El directorio no existe
+fi
