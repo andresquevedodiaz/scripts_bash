@@ -1,25 +1,96 @@
 #!/bin/bash
 #script para hacer backups
 updatedb
-echo escriba la ruta absoluta del directorio a respaldar
+
+salir ()
+{
+exit
+}
+
+defacopiar ()
+{
+echo Escriba la ruta absoluta del directorio a respaldar
 read acopiar
-echo el directorio está en...
-locate $acopiar
+echo El directorio está en...
 if [ -d $acopiar ]; then
-        echo "Desea respaldar el directorio? (s/n)"
-        read copiar
-        if [ $copiar = "s" ]; then
-                echo Dónde desea guardar el respaldo del directorio $acopiar?
-                read dondecopiar
-                rsync -avzh $acopiar $dondecopiar;
-                echo verificación de respaldo:
-                echo $dondecopiar
-		ls -l $dondecopiar
-	elif [ $copiar = "n" ]; then
-                echo La sesión ha finalizado
-        else
-                echo Esta no es una opción
-        fi
+	echo "\e[38;5;226m$acopiar\e[38;5;40m"
 else
-        echo El directorio no existe
+	echo "\e[38;5;9m$acopiar No es un directorio o no existe    \e[38;5;40m"
+	echo "¿Desea intentar de nuevo? (s/n)"
+	read newintent
+	if [ $newintent = "s" ]; then
+		defacopiar
+	elif [ $newintent = "n" ]; then
+		salir
+	else
+		salir
+	fi
 fi
+}
+
+dondecopiar ()
+{
+echo ¿Donde desea guardar el respaldo del directorio $acopiar?
+read dondecopiar
+if [ -d $dondecopiar ]; then
+	rsync -avzh $acopiar $dondecopiar;
+	echo verificación de respaldo:
+	echo $dondecopiar
+	ls -l $dondecopiar
+else
+	echo $dondecopiar no es un directorio o no existe
+	echo "¿Desea intentar de nuevo? (s/n)"
+	read newintent
+	if [ $newintent = "s" ]; then
+		dondecopiar
+	elif [ $newintent = "n" ]; then
+		salir
+	else
+		salir
+	fi
+fi
+}
+
+echo Escriba la ruta absoluta del directorio a respaldar
+read acopiar
+echo El directorio está en...
+if [ -d $acopiar ]; then
+        echo "\e[38;5;226m$acopiar\e[38;5;40m"
+else
+	echo "\e[38;5;9m$acopiar no es un directorio o no existe\e[38;5;40m"
+	echo "¿Desea intentar de nuevo? (s/n)"
+	read newintent
+	if [ $newintent = "s" ]; then
+		defacopiar
+	else
+		salir
+	fi
+fi
+if [ -d $acopiar ]; then
+	echo "¿Desea respaldar el directorio? (s/n)"
+	read copiar
+	if [ $copiar = "s" ]; then
+		dondecopiar
+	elif [ $copiar = "n" ]; then
+		salir
+	else
+		echo $copiar no es una opción
+		echo "¿Desea intentar de nuevo? (s/n)"
+		read newintent
+		if [ $newintent = "s" ]; then
+			dondecopiar
+		elif [ $newintent = "n" ]; then
+			salir
+		else
+			salir
+		fi
+	fi
+fi
+
+
+
+
+
+
+
+
